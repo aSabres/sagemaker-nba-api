@@ -29,20 +29,17 @@ if os.getenv("SM_CHANNEL_TRAINING") is None:
 
 def dnn_training(args):
 
-    print("Start Training!")
-    print("Training dataset: ", os.listdir(path=args.train))
+    print("Start Training:")
 
-    #dataset = pandas.read_csv(os.listdir(path=args.train))
-    dataset = pandas.read_csv("data/part-00000-db74d4ca-2111-4b23-a734-0f2b4ecd417f-c000.csv")
+    print("Training dataset: ", args.train)
+
+    dataset = pandas.read_csv(args.train)
 
     # Fit the classifier model
     x_train = dataset.loc[:, ~dataset.columns.isin(['W_PCT', 'MIN', 'IS_ALL_STAR'])]
     y_train = dataset.loc[:, 'IS_ALL_STAR']
 
     x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=0.33, random_state=42)
-
-    
-    # print("Dataset: ", os.listdir(path=args.train))
 
     model = Sequential()
     model.add(Dense(36, activation='relu', input_dim=36))
@@ -88,7 +85,7 @@ if __name__ == '__main__':
     parser.add_argument('--output_dir', type=str, default=os.environ.get('SM_OUTPUT_DATA_DIR'))
 
     # hyperparameters are passed as command-line arguments to the script
-    parser.add_argument('--epochs', type=int, default=5) # 5
+    parser.add_argument('--epochs', type=int, default=2) # 5
     parser.add_argument('--batch_size', type=int, default=250) # 250
     parser.add_argument('--es_patience', type=int, default=40)
     # parser.add_argument('--learning_rate', type=float, default=0.01)
@@ -103,7 +100,7 @@ if __name__ == '__main__':
 
     # save the model
     # it seems that it's important to have a numerical name for your folder:
-    #model_path = args.model_dir + '/1'
+    model_path = args.model_dir + '/1'
     model_path = r'C:\Users\Asaf\PycharmProjects\sagemaker-nba-api\local_training\model\1'
     print('The model will be saved at :', model_path)
     model.save(model_path)
