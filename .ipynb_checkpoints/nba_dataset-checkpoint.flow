@@ -1,0 +1,357 @@
+{
+  "metadata": {
+    "version": 1,
+    "disable_limits": false
+  },
+  "nodes": [
+    {
+      "node_id": "57d4734e-fcb8-41bf-95f5-d4a2ae4b6684",
+      "type": "SOURCE",
+      "operator": "sagemaker.s3_source_0.1",
+      "parameters": {
+        "dataset_definition": {
+          "__typename": "S3CreateDatasetDefinitionOutput",
+          "datasetSourceType": "S3",
+          "name": "train_set_adv_pd.csv",
+          "description": null,
+          "s3ExecutionContext": {
+            "__typename": "S3ExecutionContext",
+            "s3Uri": "s3://asaf-sagemaker-datasets/train_set_adv_pd.csv",
+            "s3ContentType": "csv",
+            "s3HasHeader": true,
+            "s3FieldDelimiter": ",",
+            "s3DirIncludesNested": false,
+            "s3AddsFilenameColumn": false
+          }
+        }
+      },
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "default",
+          "sampling": {
+            "sampling_method": "sample_by_limit",
+            "limit_rows": 50000
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "5c51cb0b-9a32-49fd-a26a-bd72e17b1de9",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.infer_and_cast_type_0.1",
+      "parameters": {},
+      "trained_parameters": {
+        "schema": {
+          "W_PCT": "float",
+          "MIN": "float",
+          "OFF_RATING": "float",
+          "DEF_RATING": "float",
+          "NET_RATING": "float",
+          "AST_PCT": "float",
+          "AST_TO": "float",
+          "AST_RATIO": "float",
+          "OREB_PCT": "float",
+          "DREB_PCT": "float",
+          "REB_PCT": "float",
+          "TM_TOV_PCT": "float",
+          "E_TOV_PCT": "float",
+          "EFG_PCT": "float",
+          "TS_PCT": "float",
+          "USG_PCT": "float",
+          "PACE_PER40": "float",
+          "PIE": "float",
+          "IS_ALL_STAR": "long"
+        }
+      },
+      "inputs": [
+        {
+          "name": "default",
+          "node_id": "57d4734e-fcb8-41bf-95f5-d4a2ae4b6684",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "1dd9294c-18eb-4a3d-b3d6-bd639af5904e",
+      "type": "SOURCE",
+      "operator": "sagemaker.s3_source_0.1",
+      "parameters": {
+        "dataset_definition": {
+          "__typename": "S3CreateDatasetDefinitionOutput",
+          "datasetSourceType": "S3",
+          "name": "train_set_pd.csv",
+          "description": null,
+          "s3ExecutionContext": {
+            "__typename": "S3ExecutionContext",
+            "s3Uri": "s3://asaf-sagemaker-datasets/train_set_pd.csv",
+            "s3ContentType": "csv",
+            "s3HasHeader": true,
+            "s3FieldDelimiter": ",",
+            "s3DirIncludesNested": false,
+            "s3AddsFilenameColumn": false
+          }
+        }
+      },
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "default",
+          "sampling": {
+            "sampling_method": "sample_by_limit",
+            "limit_rows": 50000
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "87c1a197-6ca9-4627-852e-b60fe6135ce9",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.infer_and_cast_type_0.1",
+      "parameters": {},
+      "trained_parameters": {
+        "schema": {
+          "W_PCT": "float",
+          "MIN": "float",
+          "FGM": "float",
+          "FGA": "float",
+          "FG_PCT": "float",
+          "FG3M": "float",
+          "FG3A": "float",
+          "FG3_PCT": "float",
+          "FTM": "float",
+          "FTA": "float",
+          "FT_PCT": "float",
+          "OREB": "float",
+          "DREB": "float",
+          "REB": "float",
+          "AST": "float",
+          "TOV": "float",
+          "STL": "float",
+          "BLK": "float",
+          "BLKA": "float",
+          "PF": "float",
+          "PFD": "float",
+          "PTS": "float",
+          "IS_ALL_STAR": "long"
+        }
+      },
+      "inputs": [
+        {
+          "name": "default",
+          "node_id": "1dd9294c-18eb-4a3d-b3d6-bd639af5904e",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "d6b55a61-12ce-42b7-b940-2a191320c980",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.join_tables_0.1",
+      "name": "train_set_final_pd.csv",
+      "parameters": {
+        "left_column": "W_PCT",
+        "right_column": "W_PCT",
+        "join_type": "leftouter"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "5c51cb0b-9a32-49fd-a26a-bd72e17b1de9",
+          "output_name": "default"
+        },
+        {
+          "name": "df",
+          "node_id": "87c1a197-6ca9-4627-852e-b60fe6135ce9",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "cb613e35-97b0-4bc1-b455-d8c3e10f0cd0",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "IS_ALL_STAR_1"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "d6b55a61-12ce-42b7-b940-2a191320c980",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "8916bbd2-41b1-41cc-93eb-5fb3f2489c1e",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "W_PCT_1"
+        },
+        "move_column_parameters": {
+          "move_type": "Move to start",
+          "move_to_start_parameters": {
+            "column_to_move": "W_PCT_1"
+          }
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "cb613e35-97b0-4bc1-b455-d8c3e10f0cd0",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "6f8ac8bf-cee5-4a1a-acd5-d02b7d9cf190",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "MIN_1"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "8916bbd2-41b1-41cc-93eb-5fb3f2489c1e",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "a7994c75-0248-4bd5-aa22-62bdff51e3d2",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Rename column",
+        "rename_column_parameters": {
+          "input_column": "W_PCT_0",
+          "new_name": "W_PCT"
+        },
+        "drop_column_parameters": {}
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "6f8ac8bf-cee5-4a1a-acd5-d02b7d9cf190",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "aae51d5c-0640-4595-861d-a9b68d31531c",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Rename column",
+        "rename_column_parameters": {
+          "input_column": "MIN_0",
+          "new_name": "MIN"
+        },
+        "drop_column_parameters": {}
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "a7994c75-0248-4bd5-aa22-62bdff51e3d2",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "76571442-5cda-40a6-aaf3-b89ce68b20c2",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Rename column",
+        "rename_column_parameters": {
+          "input_column": "IS_ALL_STAR_0",
+          "new_name": "IS_ALL_STAR"
+        },
+        "drop_column_parameters": {}
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "aae51d5c-0640-4595-861d-a9b68d31531c",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "a6e55dd1-ab64-48e4-a1bd-1dd5a0a51b82",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.quick_model_0.1",
+      "parameters": {
+        "name": "quick model",
+        "label": "IS_ALL_STAR"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "76571442-5cda-40a6-aaf3-b89ce68b20c2",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    }
+  ]
+}
