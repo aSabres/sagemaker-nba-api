@@ -24,7 +24,7 @@ if os.getenv("SM_CHANNEL_TRAINING") is None:
 
 def dnn_training(args):    
     
-    print("Start Training")
+    print("Start Training!")
     
     # Fit the classifier model
     # x_train = train_set_pd.iloc[:,0: -1]
