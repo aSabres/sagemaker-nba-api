@@ -31,9 +31,9 @@ def dnn_training(args):
 
     print("Start Training:")
 
-    print("Training dataset: ", args.train)
+    print("Training dataset: ", args.train + "/part-00000-db74d4ca-2111-4b23-a734-0f2b4ecd417f-c000.csv")
 
-    dataset = pandas.read_csv(args.train)
+    dataset = pandas.read_csv(args.train + "/part-00000-db74d4ca-2111-4b23-a734-0f2b4ecd417f-c000.csv")
 
     # Fit the classifier model
     x_train = dataset.loc[:, ~dataset.columns.isin(['W_PCT', 'MIN', 'IS_ALL_STAR'])]
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     # save the model
     # it seems that it's important to have a numerical name for your folder:
     model_path = args.model_dir + '/1'
-    model_path = r'C:\Users\Asaf\PycharmProjects\sagemaker-nba-api\local_training\model\1'
+    #model_path = r'C:\Users\Asaf\PycharmProjects\sagemaker-nba-api\local_training\model\1'
     print('The model will be saved at :', model_path)
     model.save(model_path)
     print('model saved')
