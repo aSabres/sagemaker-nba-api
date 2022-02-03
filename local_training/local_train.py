@@ -88,8 +88,8 @@ if __name__ == '__main__':
     parser.add_argument('--output_dir', type=str, default=os.environ.get('SM_OUTPUT_DATA_DIR'))
 
     # hyperparameters are passed as command-line arguments to the script
-    parser.add_argument('--epochs', type=int, default=1) # 5
-    parser.add_argument('--batch_size', type=int, default=5) # 250
+    parser.add_argument('--epochs', type=int, default=5) # 5
+    parser.add_argument('--batch_size', type=int, default=250) # 250
     parser.add_argument('--es_patience', type=int, default=40)
     # parser.add_argument('--learning_rate', type=float, default=0.01)
     # parser.add_argument('--drop_rate', type=float, default=0.2)
