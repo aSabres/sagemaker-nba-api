@@ -52,7 +52,7 @@ def dnn_training(args):
 
     # early stopping callback
     # This callback will stop the training when there is no improvement in
-    # the validation loss for 100 consecutive epochs.
+    # the validation loss for args.es_patience consecutive epochs.
     es = EarlyStopping(monitor='val_accuracy',
                                        mode='max', # don't minimize the accuracy!
                                        patience=args.es_patience,
