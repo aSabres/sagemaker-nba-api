@@ -31,9 +31,11 @@ def dnn_training(args):
 
     print("Start Training:")
 
-    print("Training dataset: ", args.train + "/part-00000-db74d4ca-2111-4b23-a734-0f2b4ecd417f-c000.csv")
+    print("Training dataset: ", args.train + "/" + args.dataset_file)
 
-    dataset = pandas.read_csv(args.train + "/part-00000-db74d4ca-2111-4b23-a734-0f2b4ecd417f-c000.csv")
+    dataset = pandas.read_csv(args.train + "/" + args.dataset_file)
+
+    print(dataset['IS_ALL_STAR'].value_counts())
 
     # Fit the classifier model
     x_train = dataset.loc[:, ~dataset.columns.isin(['W_PCT', 'MIN', 'IS_ALL_STAR'])]
@@ -42,11 +44,14 @@ def dnn_training(args):
     x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=0.33, random_state=42)
 
     model = Sequential()
-    model.add(Dense(36, activation='relu', input_dim=36))
-    model.add(Dense(22, activation='relu'))
-    model.add(Dense(16, activation='relu'))
+    model.add(Dense(16, activation='relu', input_dim=16))
+    #model.add(Dense(22, activation='relu'))
+    #model.add(Dense(16, activation='relu'))
     model.add(Dense(10, activation='relu'))
     model.add(Dense(1, activation='sigmoid'))
+
+
+
 
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
@@ -63,6 +68,17 @@ def dnn_training(args):
     # train the model
     hist = model.fit(x_train, y_train, validation_data=(np.asarray(x_valid).astype(np.float32), np.asarray(y_valid).astype(np.float32)),
                      shuffle=True, callbacks=[es], epochs=args.epochs, batch_size=args.batch_size)
+
+
+    # make a prediction
+    x_test = np.array([[105.9,105.2,0.7,0.169,2.24,19.2,0.073,0.21,0.142,8.6,8.6,0.558,0.587,0.197,74.98,0.15]])
+    predictions = model.predict(np.asarray(x_test).astype(np.float32))
+    print(predictions)
+
+    # outputs are in type int, convert them to bool
+    #y_test = (y_test > 0.5)
+    predictions = (predictions > 0.5)
+    print(predictions)
 
     return model
     # make a prediction
@@ -83,6 +99,7 @@ if __name__ == '__main__':
     parser.add_argument('--train', type=str, default=os.environ.get('SM_CHANNEL_TRAINING'))
     parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR'))
     parser.add_argument('--output_dir', type=str, default=os.environ.get('SM_OUTPUT_DATA_DIR'))
+    parser.add_argument('--dataset_file', type=str, default='train_set_adv_pd.csv')
 
     # hyperparameters are passed as command-line arguments to the script
     parser.add_argument('--epochs', type=int, default=2) # 5
